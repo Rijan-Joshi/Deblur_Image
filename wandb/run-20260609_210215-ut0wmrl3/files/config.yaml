@@ -1,0 +1,40 @@
+_wandb:
+    value:
+        cli_version: 0.27.2
+        e:
+            9bgyx2zosefw0fxnmn0vi6fqi80ttpp4:
+                codePath: e:\Rijan_Shrestha\AI\AI Works\Deblur_Image\test.ipynb
+                codePathLocal: test.ipynb
+                email: csaijspy@gmail.com
+                executable: e:\Rijan_Shrestha\AI\AI Works\ai_venv\scripts\python.exe
+                git:
+                    commit: a615bec3be25f786493750a6aa8c2232ec40b994
+                    remote: https://github.com/Rijan-Joshi/Deblur_Image.git
+                host: Nishan
+                os: Windows-11-10.0.26200-SP0
+                program: e:\Rijan_Shrestha\AI\AI Works\Deblur_Image\test.ipynb
+                python: CPython 3.13.0
+                root: e:\Rijan_Shrestha\AI\AI Works\Deblur_Image
+                startedAt: "2026-06-09T15:17:15.685613Z"
+                writerId: 9bgyx2zosefw0fxnmn0vi6fqi80ttpp4
+        m: []
+        python_version: 3.13.0
+        t:
+            "3":
+                - 2
+                - 16
+            "4": 3.13.0
+            "5": 0.27.2
+            "8":
+                - 1
+                - 3
+            "12": 0.27.2
+            "13": windows-amd64
+architecture:
+    value: CNN
+dataset:
+    value: CIFAR-100
+epochs:
+    value: 10
+learning_rate:
+    value: 0.02

@@ -1,0 +1,17 @@
+{
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "CPython 3.13.0",
+  "startedAt": "2026-06-09T15:17:58.524281Z",
+  "program": "e:\\Rijan_Shrestha\\AI\\AI Works\\Deblur_Image\\test.ipynb",
+  "codePath": "e:\\Rijan_Shrestha\\AI\\AI Works\\Deblur_Image\\test.ipynb",
+  "codePathLocal": "test.ipynb",
+  "git": {
+    "remote": "https://github.com/Rijan-Joshi/Deblur_Image.git",
+    "commit": "a615bec3be25f786493750a6aa8c2232ec40b994"
+  },
+  "email": "csaijspy@gmail.com",
+  "root": "e:\\Rijan_Shrestha\\AI\\AI Works\\Deblur_Image",
+  "host": "Nishan",
+  "executable": "e:\\Rijan_Shrestha\\AI\\AI Works\\ai_venv\\scripts\\python.exe",
+  "writerId": "cm6qus8bpaf0ih2mvxyo8yk4glcnpi7k"
+}
