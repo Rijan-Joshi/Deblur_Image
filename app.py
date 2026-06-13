@@ -83,32 +83,54 @@ except Exception as e:
 #   3. Converts the output tensor back to a PIL image
 # ============================================================
 
-# Image preprocessing: convert PIL → Tensor (values 0-1)
-transform = transforms.Compose([
-    transforms.ToTensor(),  # Converts HxWxC uint8 [0,255] → CxHxW float [0,1]
+import cv2
+import numpy as np
+
+# ---------------------------------------------------------------
+# WHY BGR? Your training used cv2.imread() which reads images in
+# BGR order (not RGB). So the model learned BGR-ordered inputs.
+# We must replicate the EXACT same preprocessing as training:
+#   1. cv2.imread → BGR numpy array
+#   2. Resize to 224x224 (same as training transform)
+#   3. Convert to tensor with ToTensor (keeps BGR order)
+# ---------------------------------------------------------------
+
+train_transform = transforms.Compose([
+    transforms.ToPILImage(),       # cv2 BGR numpy → PIL (ToPILImage handles uint8 HxWxC)
+    transforms.Resize((224, 224)), # Must match training: Resize((224, 224))
+    transforms.ToTensor(),         # PIL → CxHxW float [0,1]
 ])
 
 def deblur_image(input_image: Image.Image) -> Image.Image:
     """
     Takes a blurry PIL Image, runs deblurring model, returns sharp PIL Image.
+    Replicates the exact same preprocessing pipeline used during training.
     """
     if model is None:
         raise gr.Error("Model not loaded. Check your MODEL_PATH in app.py")
 
-    # Convert to RGB in case the image has an alpha channel (RGBA/PNG)
-    input_image = input_image.convert("RGB")
+    # Step 1: Convert PIL (RGB) → numpy array → BGR (as cv2 would have loaded it)
+    # Training used cv2.imread() which produces BGR; we must match that.
+    img_rgb = np.array(input_image.convert("RGB"))
+    img_bgr = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2BGR)  # Match cv2.imread output
 
-    # Transform image to tensor: shape [1, C, H, W]
-    input_tensor = transform(input_image).unsqueeze(0).to(DEVICE)
+    # Step 2: Apply the same transforms used during training
+    input_tensor = train_transform(img_bgr).unsqueeze(0).to(DEVICE)  # [1, C, H, W]
 
-    with torch.no_grad():  # Disable gradient tracking (faster, less memory)
+    # Step 3: Run model inference
+    with torch.no_grad():
         output_tensor = model(input_tensor)
 
-    # Clamp values to [0,1] range and remove batch dimension
-    output_tensor = output_tensor.squeeze(0).clamp(0, 1)
+    # Step 4: Post-process output
+    output_tensor = output_tensor.squeeze(0).clamp(0, 1)  # Remove batch dim, clamp [0,1]
 
-    # Convert tensor [C, H, W] back to PIL image
-    output_image = transforms.ToPILImage()(output_tensor.cpu())
+    # Step 5: Convert tensor back to PIL Image
+    # Output is BGR-ordered, so convert back to RGB for display
+    output_np = output_tensor.cpu().numpy()          # [C, H, W] float [0,1]
+    output_np = (output_np * 255).astype(np.uint8)   # [C, H, W] uint8 [0,255]
+    output_bgr = np.transpose(output_np, (1, 2, 0))  # [H, W, C] BGR
+    output_rgb = cv2.cvtColor(output_bgr, cv2.COLOR_BGR2RGB)  # BGR → RGB
+    output_image = Image.fromarray(output_rgb)
 
     return output_image
 
